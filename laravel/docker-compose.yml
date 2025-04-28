@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: ${COMPOSE_PROJECT_NAME}_laravel_app
     ports:
-      - "8000:80"   # Laravel's default port mapped to 8000 on the host
+      - "8001:8000"   # Laravel's default port mapped to 8081 on the host
     environment:
       APP_ENV: local
       APP_KEY: ${APP_KEY}   # Make sure to set a key (run `php artisan key:generate`)
@@ -18,14 +18,13 @@ services:
       DB_PASSWORD: laravel
       NODE_ENV: development
     volumes:
-      - ./laravel:/var/www/html
+      - ./laravel:/app
     depends_on:
       - db
       - phpmyadmin
-      - node
 
   db:
-    image: mysql:5.7
+    image: mysql:8.0
     container_name: ${COMPOSE_PROJECT_NAME}_mysql
     restart: always
     environment:
@@ -41,23 +40,13 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}_phpmyadmin
     restart: always
     ports:
-      - "8080:80"
+      - "8081:80"
     environment:
       PMA_HOST: db
       PMA_USER: root
       PMA_PASSWORD: root
     depends_on:
       - db
-
-  node:
-    image: node:16
-    container_name: ${COMPOSE_PROJECT_NAME}_node
-    working_dir: /var/www/html
-    volumes:
-      - ./laravel:/var/www/html
-    command: ["npm", "run", "dev"]
-    depends_on:
-      - laravel
 
 volumes:
   db_data:

@@ -17,7 +17,4 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | b
     && node -v \
     && npm -v
 
-ENV NODE_PATH $NVM_DIR/versions/node/v18.18.2/lib/node_modules
-ENV PATH $NVM_DIR/versions/node/v18.18.2/bin:$PATH
-
 WORKDIR /var/www/html
