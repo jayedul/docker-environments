@@ -1,37 +1,34 @@
 version: '3.8'
 
 services:
-  laravel:
+  wordpress:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: ${COMPOSE_PROJECT_NAME}_laravel_app
+    container_name: ${COMPOSE_PROJECT_NAME}_wordpress_app
     ports:
-      - "8000:80"   # Laravel's default port mapped to 8000 on the host
+      - "8003:80"
     environment:
-      APP_ENV: local
-      APP_KEY: ${APP_KEY}   # Make sure to set a key (run `php artisan key:generate`)
       DB_HOST: db
       DB_PORT: 3306
-      DB_DATABASE: laravel
-      DB_USERNAME: laravel
-      DB_PASSWORD: laravel
+      DB_DATABASE: wordpress
+      DB_USERNAME: wordpress
+      DB_PASSWORD: wordpress
       NODE_ENV: development
     volumes:
-      - ./laravel:/var/www/html
+      - ./wordpress:/var/www/html
     depends_on:
       - db
       - phpmyadmin
-      - node
 
   db:
-    image: mysql:5.7
+    image: mysql:8.0
     container_name: ${COMPOSE_PROJECT_NAME}_mysql
     restart: always
     environment:
-      MYSQL_DATABASE: laravel
-      MYSQL_USER: laravel
-      MYSQL_PASSWORD: laravel
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
       MYSQL_ROOT_PASSWORD: root
     volumes:
       - db_data:/var/lib/mysql
@@ -41,23 +38,13 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}_phpmyadmin
     restart: always
     ports:
-      - "8080:80"
+      - "8083:80"
     environment:
       PMA_HOST: db
       PMA_USER: root
       PMA_PASSWORD: root
     depends_on:
       - db
-
-  node:
-    image: node:16
-    container_name: ${COMPOSE_PROJECT_NAME}_node
-    working_dir: /var/www/html
-    volumes:
-      - ./laravel:/var/www/html
-    command: ["npm", "run", "dev"]
-    depends_on:
-      - laravel
 
 volumes:
   db_data:
