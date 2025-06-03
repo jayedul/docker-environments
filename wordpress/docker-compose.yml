@@ -5,25 +5,21 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: ${COMPOSE_PROJECT_NAME}_wordpress_app
     ports:
       - "8003:80"
     environment:
-      DB_HOST: db
-      DB_PORT: 3306
-      DB_DATABASE: wordpress
-      DB_USERNAME: wordpress
-      DB_PASSWORD: wordpress
-      NODE_ENV: development
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
     volumes:
       - ./wordpress:/var/www/html
+      - ./php.ini:/usr/local/etc/php/conf.d/uploads.ini
     depends_on:
       - db
-      - phpmyadmin
 
   db:
     image: mysql:8.0
-    container_name: ${COMPOSE_PROJECT_NAME}_mysql
     restart: always
     environment:
       MYSQL_DATABASE: wordpress
@@ -35,7 +31,6 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: ${COMPOSE_PROJECT_NAME}_phpmyadmin
     restart: always
     ports:
       - "8083:80"
